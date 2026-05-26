@@ -201,7 +201,13 @@ def enviar_webhook(equipe, capitao, discord, j1, j2, j3):
     }
 
     try:
-        requests.post(WEBHOOK_URL, json={"embeds": [embed]})
+        response = requests.post(
+    WEBHOOK_URL,
+    json={"embeds": [embed]}
+)
+
+print("STATUS:", response.status_code)
+print("RESPOSTA:", response.text)
     except Exception as e:
         print(f"Erro ao enviar para o Discord: {e}")
 

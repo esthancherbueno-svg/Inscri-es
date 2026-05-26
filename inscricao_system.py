@@ -13,7 +13,7 @@ app = Flask(__name__)
 # CONFIGURAÇÕES
 # ==============================
 
-WEBHOOK_URL = "https://discord.com/api/webhooks/1508862663223017654/mFKELpWZMC_trZIW1ppZVmEUMrvi3EsPt3Z_HA6oEg2SYitBaAryZSv1wPFdaeNAc6R0"
+WEBHOOK_URL = "https://discord.com/api/webhooks/1208862663223017654/mFKELpWZMC_trZIW1ppZVmEUMrvi3EsPt3Z_HA6oEg2SYitBaAryZSv1wPFdaeNAc6R0"
 
 # ==============================
 # BANCO DE DADOS

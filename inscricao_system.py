@@ -22,19 +22,18 @@ WEBHOOK_URL = "https://discord.com/api/webhooks/1508862663223017654/mFKELpWZMC_t
 conn = sqlite3.connect('equipes.db', check_same_thread=False)
 cursor = conn.cursor()
 
-# Criando a tabela correta alinhada com o formulário
 cursor.execute('''
 CREATE TABLE IF NOT EXISTS equipes (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     equipe TEXT,
     capitao TEXT,
+    discord TEXT,
     jogador1 TEXT,
     jogador2 TEXT,
     jogador3 TEXT,
     data TEXT
 )
 ''')
-
 conn.commit()
 
 # ==============================
@@ -143,6 +142,8 @@ button:hover {
         <label>Capitão</label>
         <input type="text" name="capitao" required>
 
+        <label>Discord do Capitão</label>
+        <input type="text" name="discord" required>
     </div>
 
     <div class="section">
@@ -173,7 +174,7 @@ button:hover {
 # FUNÇÃO WEBHOOK DISCORD
 # ==============================
 
-def enviar_webhook(equipe, capitao, j1, j2, j3):
+def enviar_webhook(equipe, capitao, discord, j1, j2, j3):
     if not requests:
         return
 
@@ -188,7 +189,7 @@ def enviar_webhook(equipe, capitao, j1, j2, j3):
             },
             {
                 "name": "👑 Capitão",
-                "value": capitao,
+                "value": f"{capitao} (Discord: {discord})",
                 "inline": False
             },
             {
@@ -202,7 +203,7 @@ def enviar_webhook(equipe, capitao, j1, j2, j3):
     try:
         requests.post(WEBHOOK_URL, json={"embeds": [embed]})
     except Exception as e:
-        print(f"Erro ao enviar webhook: {e}")
+        print(f"Erro ao enviar para o Discord: {e}")
 
 # ==============================
 # ROTAS
@@ -213,23 +214,23 @@ def index():
     if request.method == 'POST':
         equipe = request.form['equipe']
         capitao = request.form['capitao']
+        discord = request.form['discord']
         jogador1 = request.form['jogador1']
         jogador2 = request.form['jogador2']
         jogador3 = request.form['jogador3']
 
         data = datetime.now().strftime('%d/%m/%Y %H:%M')
 
-        # Corrigido: Removido campo 'discord' fantasma e alinhado os valores (?)
         cursor.execute('''
         INSERT INTO equipes
-        (equipe, capitao, jogador1, jogador2, jogador3, data)
-        VALUES (?, ?, ?, ?, ?, ?)
-        ''', (equipe, capitao, jogador1, jogador2, jogador3, data))
+        (equipe, capitao, discord, jogador1, jogador2, jogador3, data)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        ''', (equipe, capitao, discord, jogador1, jogador2, jogador3, data))
 
         conn.commit()
 
-        # Corrigido: Passando a quantidade exata de argumentos esperada
-        enviar_webhook(equipe, capitao, jogador1, jogador2, jogador3)
+        # Aqui estava o erro! Agora enviando todos os 6 dados certinho:
+        enviar_webhook(equipe, capitao, discord, jogador1, jogador2, jogador3)
 
         return redirect('/')
 
@@ -251,6 +252,7 @@ def admin():
             <th>ID</th>
             <th>Equipe</th>
             <th>Capitão</th>
+            <th>Discord</th>
             <th>Jogadores</th>
             <th>Data</th>
         </tr>
@@ -262,8 +264,9 @@ def admin():
             <td>{eq[0]}</td>
             <td>{eq[1]}</td>
             <td>{eq[2]}</td>
-            <td>{eq[3]}, {eq[4]}, {eq[5]}</td>
-            <td>{eq[6]}</td>
+            <td>{eq[3]}</td>
+            <td>{eq[4]}, {eq[5]}, {eq[6]}</td>
+            <td>{eq[7]}</td>
         </tr>
         """
 

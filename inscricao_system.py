@@ -13,7 +13,7 @@ app = Flask(__name__)
 # CONFIGURAÇÕES
 # ==============================
 
-WEBHOOK_URL = "COLE_SEU_WEBHOOK_AQUI"
+WEBHOOK_URL = "https://discord.com/api/webhooks/1508862663223017654/mFKELpWZMC_trZIW1ppZVmEUMrvi3EsPt3Z_HA6oEg2SYitBaAryZSv1wPFdaeNAc6R0"
 
 # ==============================
 # BANCO DE DADOS
@@ -174,7 +174,7 @@ button:hover {
 # ==============================
 
 def enviar_webhook(equipe, capitao, discord, j1, j2, j3):
-    if WEBHOOK_URL == "COLE_SEU_WEBHOOK_AQUI":
+    if WEBHOOK_URL == "https://discord.com/api/webhooks/1508862663223017654/mFKELpWZMC_trZIW1ppZVmEUMrvi3EsPt3Z_HA6oEg2SYitBaAryZSv1wPFdaeNAc6R0":
         return
 
     embed = {
@@ -215,7 +215,6 @@ def index():
     if request.method == 'POST':
         equipe = request.form['equipe']
         capitao = request.form['capitao']
-        discord = request.form['discord']
         jogador1 = request.form['jogador1']
         jogador2 = request.form['jogador2']
         jogador3 = request.form['jogador3']
@@ -224,7 +223,7 @@ def index():
 
         cursor.execute('''
         INSERT INTO equipes
-        (equipe, capitao, discord, jogador1, jogador2, jogador3, data)
+        (equipe, capitao, jogador1, jogador2, jogador3, data)
         VALUES (?, ?, ?, ?, ?, ?, ?)
         ''', (equipe, capitao, discord, jogador1, jogador2, jogador3, data))
 
@@ -233,7 +232,6 @@ def index():
         enviar_webhook(
             equipe,
             capitao,
-            discord,
             jogador1,
             jogador2,
             jogador3
@@ -259,7 +257,6 @@ def admin():
             <th>ID</th>
             <th>Equipe</th>
             <th>Capitão</th>
-            <th>Discord</th>
             <th>Jogadores</th>
             <th>Data</th>
         </tr>
